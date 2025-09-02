@@ -107,6 +107,13 @@ commercial-value-architecture/
 └── README.md                          # This file
 ```
 
+## Data Schema and Metadata
+
+Structured metadata for balance points lives in the `data` directory.
+- `data/balancePoints.ts` defines the balance points and their descriptive effects.
+- `data/metadata-dictionary.md` documents each field and its meaning.
+
+
 ## Usage Guide
 
 The visualization has two main sections:
