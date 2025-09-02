@@ -291,8 +291,8 @@ const InteractiveDiamond = () => {
                   type="range" 
                   min="-50" 
                   max="50" 
-                  value={valuePosition} 
-                  onChange={(e) => setValuePosition(parseInt(e.target.value))}
+                  value={valuePosition}
+                  onChange={(e) => setValuePosition(parseInt(e.target.value, 10))}
                   className="w-full"
                 />
                 <div className="mt-1 text-sm text-gray-600 bg-blue-50 p-2 rounded">
@@ -309,8 +309,8 @@ const InteractiveDiamond = () => {
                   type="range" 
                   min="-50" 
                   max="50" 
-                  value={directionPosition} 
-                  onChange={(e) => setDirectionPosition(parseInt(e.target.value))}
+                  value={directionPosition}
+                  onChange={(e) => setDirectionPosition(parseInt(e.target.value, 10))}
                   className="w-full"
                 />
                 <div className="mt-1 text-sm text-gray-600 bg-blue-50 p-2 rounded">
@@ -327,8 +327,8 @@ const InteractiveDiamond = () => {
                   type="range" 
                   min="-50" 
                   max="50" 
-                  value={exchangePosition} 
-                  onChange={(e) => setExchangePosition(parseInt(e.target.value))}
+                  value={exchangePosition}
+                  onChange={(e) => setExchangePosition(parseInt(e.target.value, 10))}
                   className="w-full"
                 />
                 <div className="mt-1 text-sm text-gray-600 bg-blue-50 p-2 rounded">
@@ -345,8 +345,8 @@ const InteractiveDiamond = () => {
                   type="range" 
                   min="-50" 
                   max="50" 
-                  value={operatePosition} 
-                  onChange={(e) => setOperatePosition(parseInt(e.target.value))}
+                  value={operatePosition}
+                  onChange={(e) => setOperatePosition(parseInt(e.target.value, 10))}
                   className="w-full"
                 />
                 <div className="mt-1 text-sm text-gray-600 bg-blue-50 p-2 rounded">
@@ -377,10 +377,10 @@ const InteractiveDiamond = () => {
                 </button>
                 <button 
                   onClick={() => {
-                    setValuePosition(Math.floor(Math.random() * 100 - 50));
-                    setDirectionPosition(Math.floor(Math.random() * 100 - 50));
-                    setExchangePosition(Math.floor(Math.random() * 100 - 50));
-                    setOperatePosition(Math.floor(Math.random() * 100 - 50));
+                    setValuePosition(Math.floor(Math.random() * 101) - 50);
+                    setDirectionPosition(Math.floor(Math.random() * 101) - 50);
+                    setExchangePosition(Math.floor(Math.random() * 101) - 50);
+                    setOperatePosition(Math.floor(Math.random() * 101) - 50);
                   }}
                   className="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700"
                 >
