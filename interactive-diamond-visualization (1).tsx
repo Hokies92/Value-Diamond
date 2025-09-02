@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
+import { balancePoints, BalancePoint } from './data/balancePoints';
 
 const InteractiveDiamond = () => {
-  // State for the position of each point of the diamond
-  const [valuePosition, setValuePosition] = useState(0); // -50 to 50, 0 is center
-  const [directionPosition, setDirectionPosition] = useState(0); 
-  const [exchangePosition, setExchangePosition] = useState(0);
-  const [operatePosition, setOperatePosition] = useState(0);
-  
+  // State for the position of each balance point
+  const initialPositions = Object.fromEntries(balancePoints.map((bp) => [bp.key, 0])) as Record<BalancePoint['key'], number>;
+
+  const [positions, setPositions] = useState(initialPositions);
+
   // Calculate diamond points based on slider values
-  const topPoint = { x: 400 + valuePosition * 2, y: 120 };
-  const rightPoint = { x: 580 + exchangePosition, y: 300 + exchangePosition / 2 };
-  const bottomPoint = { x: 400 + operatePosition * 2, y: 480 };
-  const leftPoint = { x: 220 + directionPosition, y: 300 + directionPosition / 2 };
+  const topPoint = { x: 400 + positions.value * 2, y: 120 };
+  const rightPoint = { x: 580 + positions.exchange, y: 300 + positions.exchange / 2 };
+  const bottomPoint = { x: 400 + positions.operate * 2, y: 480 };
+  const leftPoint = { x: 220 + positions.direction, y: 300 + positions.direction / 2 };
   
   // Get the path string for the diamond
   const diamondPath = `
@@ -32,39 +32,24 @@ const InteractiveDiamond = () => {
   `;
   
   // Get effect description based on slider positions
-  const getValueEffect = () => {
-    if (valuePosition < -30) return "Heavy Wall Street focus. Investors happy but customers may feel neglected.";
-    if (valuePosition > 30) return "Strong customer value focus, but Wall Street may not understand strategy.";
-    return "Balanced value proposition between investor and customer needs.";
-  };
-  
-  const getDirectionEffect = () => {
-    if (directionPosition < -30) return "Strategy too investor-focused. Employee engagement suffering.";
-    if (directionPosition > 30) return "Employee-driven strategy may lack market alignment.";
-    return "Strategic alignment balances investor expectations and employee capabilities.";
-  };
-  
-  const getExchangeEffect = () => {
-    if (exchangePosition < -30) return "Customer focus without market context. May miss emerging trends.";
-    if (exchangePosition > 30) return "Market-driven but not addressing specific customer needs.";
-    return "Value exchange optimized between customer needs and market conditions.";
-  };
-  
-  const getOperateEffect = () => {
-    if (operatePosition < -30) return "Operating model too employee-centric, disconnected from market realities.";
-    if (operatePosition > 30) return "Market-driven operations without employee engagement.";
-    return "Operating model aligns employee capabilities with market dynamics.";
+  const getEffect = (key: BalancePoint['key']) => {
+    const point = balancePoints.find((bp) => bp.key === key)!;
+    const value = positions[key];
+    if (value < -30) return point.effects.low;
+    if (value > 30) return point.effects.high;
+    return point.effects.balanced;
   };
   
   // Calculate diamond health score
   const calculateHealth = () => {
-    const balanceScore = 100 - (
-      Math.abs(valuePosition) + 
-      Math.abs(directionPosition) + 
-      Math.abs(exchangePosition) + 
-      Math.abs(operatePosition)
-    ) / 2;
-    
+    const balanceScore =
+      100 -
+      Object.values(positions).reduce(
+        (sum, pos) => sum + Math.abs(pos),
+        0
+      ) /
+        2;
+
     return Math.max(0, balanceScore);
   };
   
@@ -281,80 +266,32 @@ const InteractiveDiamond = () => {
               <h3 className="font-bold text-lg text-center mb-3 text-blue-800">
                 Balance Point Controls
               </h3>
-              
-              <div className="mb-4">
-                <label className="flex items-center justify-between mb-1">
-                  <span className="font-medium text-blue-900">VALUE</span>
-                  <span className="text-sm text-gray-500">Wall Street ← → Customers</span>
-                </label>
-                <input 
-                  type="range" 
-                  min="-50" 
-                  max="50" 
-                  value={valuePosition} 
-                  onChange={(e) => setValuePosition(parseInt(e.target.value))}
-                  className="w-full"
-                />
-                <div className="mt-1 text-sm text-gray-600 bg-blue-50 p-2 rounded">
-                  {getValueEffect()}
+
+              {balancePoints.map((bp) => (
+                <div className="mb-4" key={bp.key}>
+                  <label className="flex items-center justify-between mb-1">
+                    <span className="font-medium text-blue-900">{bp.label}</span>
+                    <span className="text-sm text-gray-500">{bp.stakeholders}</span>
+                  </label>
+                  <input
+                    type="range"
+                    min="-50"
+                    max="50"
+                    value={positions[bp.key]}
+                    onChange={(e) =>
+                      setPositions((prev) => ({
+                        ...prev,
+                        [bp.key]: parseInt(e.target.value),
+                      }))
+                    }
+                    className="w-full"
+                  />
+                  <div className="mt-1 text-sm text-gray-600 bg-blue-50 p-2 rounded">
+                    {getEffect(bp.key)}
+                  </div>
                 </div>
-              </div>
-              
-              <div className="mb-4">
-                <label className="flex items-center justify-between mb-1">
-                  <span className="font-medium text-blue-900">DIRECTION</span>
-                  <span className="text-sm text-gray-500">Wall Street ← → Employees</span>
-                </label>
-                <input 
-                  type="range" 
-                  min="-50" 
-                  max="50" 
-                  value={directionPosition} 
-                  onChange={(e) => setDirectionPosition(parseInt(e.target.value))}
-                  className="w-full"
-                />
-                <div className="mt-1 text-sm text-gray-600 bg-blue-50 p-2 rounded">
-                  {getDirectionEffect()}
-                </div>
-              </div>
-              
-              <div className="mb-4">
-                <label className="flex items-center justify-between mb-1">
-                  <span className="font-medium text-blue-900">EXCHANGE</span>
-                  <span className="text-sm text-gray-500">Customers ← → Market</span>
-                </label>
-                <input 
-                  type="range" 
-                  min="-50" 
-                  max="50" 
-                  value={exchangePosition} 
-                  onChange={(e) => setExchangePosition(parseInt(e.target.value))}
-                  className="w-full"
-                />
-                <div className="mt-1 text-sm text-gray-600 bg-blue-50 p-2 rounded">
-                  {getExchangeEffect()}
-                </div>
-              </div>
-              
-              <div className="mb-4">
-                <label className="flex items-center justify-between mb-1">
-                  <span className="font-medium text-blue-900">OPERATE</span>
-                  <span className="text-sm text-gray-500">Employees ← → Market</span>
-                </label>
-                <input 
-                  type="range" 
-                  min="-50" 
-                  max="50" 
-                  value={operatePosition} 
-                  onChange={(e) => setOperatePosition(parseInt(e.target.value))}
-                  className="w-full"
-                />
-                <div className="mt-1 text-sm text-gray-600 bg-blue-50 p-2 rounded">
-                  {getOperateEffect()}
-                </div>
-              </div>
+              ))}
             </div>
-            
             <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <h3 className="font-bold text-center mb-2">CEO/CFO Insights</h3>
               <p className="text-gray-700 text-sm mb-2">
@@ -364,24 +301,29 @@ const InteractiveDiamond = () => {
                 Finding the optimal balance requires understanding how these initial tensions propagate through the organization.
               </p>
               <div className="mt-3 grid grid-cols-2 gap-2">
-                <button 
-                  onClick={() => {
-                    setValuePosition(0);
-                    setDirectionPosition(0);
-                    setExchangePosition(0);
-                    setOperatePosition(0);
-                  }}
+                <button
+                  onClick={() =>
+                    setPositions(
+                      Object.fromEntries(
+                        balancePoints.map((bp) => [bp.key, 0])
+                      ) as Record<BalancePoint['key'], number>
+                    )
+                  }
                   className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
                 >
                   Ideal Form
                 </button>
-                <button 
-                  onClick={() => {
-                    setValuePosition(Math.floor(Math.random() * 100 - 50));
-                    setDirectionPosition(Math.floor(Math.random() * 100 - 50));
-                    setExchangePosition(Math.floor(Math.random() * 100 - 50));
-                    setOperatePosition(Math.floor(Math.random() * 100 - 50));
-                  }}
+                <button
+                  onClick={() =>
+                    setPositions(
+                      Object.fromEntries(
+                        balancePoints.map((bp) => [
+                          bp.key,
+                          Math.floor(Math.random() * 100 - 50),
+                        ])
+                      ) as Record<BalancePoint['key'], number>
+                    )
+                  }
                   className="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700"
                 >
                   Stress Test
