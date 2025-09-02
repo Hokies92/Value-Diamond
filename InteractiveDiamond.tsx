@@ -77,6 +77,15 @@ const InteractiveDiamond = () => {
     if (health >= 20) return "Significant structural issues. Organization likely experiencing dysfunction.";
     return "Critical structural failure. Organization at risk of collapse.";
   };
+
+  // Determine bar color based on health
+  const getHealthColor = () => {
+    const health = calculateHealth();
+    if (health >= 80) return "bg-green-500";
+    if (health >= 60) return "bg-yellow-400";
+    if (health >= 40) return "bg-orange-500";
+    return "bg-red-500";
+  };
   
   return (
     <div className="flex flex-col bg-gray-50 rounded-lg p-4 shadow-lg">
@@ -158,11 +167,17 @@ const InteractiveDiamond = () => {
               <path d={idealDiamondPath} fill="none" stroke="#0f766e" strokeWidth="1" strokeDasharray="5,5" />
               
               {/* Dynamic Diamond */}
-              <path d={diamondPath} fill="none" stroke="#0f766e" strokeWidth="3" />
+              <path
+                d={diamondPath}
+                fill="none"
+                stroke="#0f766e"
+                strokeWidth="3"
+                className="transition-all duration-300"
+              />
               
               {/* Balance points */}
               {/* Top point - VALUE */}
-              <g>
+              <g className="transition-all duration-300">
                 <circle cx={topPoint.x} cy={topPoint.y} r="16" fill="#0f766e" fillOpacity="0.2" />
                 <circle cx={topPoint.x} cy={topPoint.y} r="12" fill="#0f766e" />
                 <circle cx={topPoint.x} cy={topPoint.y} r="5" fill="#ffffff" />
@@ -175,7 +190,7 @@ const InteractiveDiamond = () => {
               </text>
               
               {/* Right point - EXCHANGE */}
-              <g>
+              <g className="transition-all duration-300">
                 <circle cx={rightPoint.x} cy={rightPoint.y} r="16" fill="#0f766e" fillOpacity="0.2" />
                 <circle cx={rightPoint.x} cy={rightPoint.y} r="12" fill="#0f766e" />
                 <circle cx={rightPoint.x} cy={rightPoint.y} r="5" fill="#ffffff" />
@@ -188,7 +203,7 @@ const InteractiveDiamond = () => {
               </text>
               
               {/* Bottom point - OPERATE */}
-              <g>
+              <g className="transition-all duration-300">
                 <circle cx={bottomPoint.x} cy={bottomPoint.y} r="16" fill="#0f766e" fillOpacity="0.2" />
                 <circle cx={bottomPoint.x} cy={bottomPoint.y} r="12" fill="#0f766e" />
                 <circle cx={bottomPoint.x} cy={bottomPoint.y} r="5" fill="#ffffff" />
@@ -201,7 +216,7 @@ const InteractiveDiamond = () => {
               </text>
               
               {/* Left point - DIRECTION */}
-              <g>
+              <g className="transition-all duration-300">
                 <circle cx={leftPoint.x} cy={leftPoint.y} r="16" fill="#0f766e" fillOpacity="0.2" />
                 <circle cx={leftPoint.x} cy={leftPoint.y} r="12" fill="#0f766e" />
                 <circle cx={leftPoint.x} cy={leftPoint.y} r="5" fill="#ffffff" />
@@ -256,22 +271,19 @@ const InteractiveDiamond = () => {
             </svg>
           </div>
           
-          <div className="mt-4 flex justify-center items-center">
-            <div className="bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 h-4 w-full rounded-lg">
-              <div 
-                className="bg-white h-full rounded-full" 
-                style={{ 
-                  width: `${100 - calculateHealth()}%`,
-                  marginLeft: `${calculateHealth()}%`
-                }}
+          <div className="mt-4 flex flex-col items-center">
+            <div className="w-full bg-gray-200 h-4 rounded">
+              <div
+                className={`${getHealthColor()} h-4 rounded`}
+                style={{ width: `${calculateHealth()}%`, transition: 'width 0.3s ease' }}
               ></div>
             </div>
-          </div>
-          <div className="text-center mt-2">
-            <span className="font-bold">Structural Integrity: {calculateHealth().toFixed(0)}%</span>
-          </div>
-          <div className="mt-2 text-center text-gray-700">
-            {getHealthDescription()}
+            <div className="text-center mt-2">
+              <span className="font-bold">Structural Integrity: {calculateHealth().toFixed(0)}%</span>
+            </div>
+            <div className="mt-1 text-center text-gray-700 text-sm">
+              {getHealthDescription()}
+            </div>
           </div>
         </div>
         
@@ -287,13 +299,15 @@ const InteractiveDiamond = () => {
                   <span className="font-medium text-blue-900">VALUE</span>
                   <span className="text-sm text-gray-500">Wall Street ← → Customers</span>
                 </label>
-                <input 
-                  type="range" 
-                  min="-50" 
-                  max="50" 
+                <input
+                  type="range"
+                  min="-50"
+                  max="50"
                   value={valuePosition}
                   onChange={(e) => setValuePosition(parseInt(e.target.value, 10))}
                   className="w-full"
+                  aria-label="Value balance between Wall Street and Customers"
+                  title={valuePosition.toString()}
                 />
                 <div className="mt-1 text-sm text-gray-600 bg-blue-50 p-2 rounded">
                   {getValueEffect()}
@@ -305,13 +319,15 @@ const InteractiveDiamond = () => {
                   <span className="font-medium text-blue-900">DIRECTION</span>
                   <span className="text-sm text-gray-500">Wall Street ← → Employees</span>
                 </label>
-                <input 
-                  type="range" 
-                  min="-50" 
-                  max="50" 
+                <input
+                  type="range"
+                  min="-50"
+                  max="50"
                   value={directionPosition}
                   onChange={(e) => setDirectionPosition(parseInt(e.target.value, 10))}
                   className="w-full"
+                  aria-label="Direction balance between Wall Street and Employees"
+                  title={directionPosition.toString()}
                 />
                 <div className="mt-1 text-sm text-gray-600 bg-blue-50 p-2 rounded">
                   {getDirectionEffect()}
@@ -323,13 +339,15 @@ const InteractiveDiamond = () => {
                   <span className="font-medium text-blue-900">EXCHANGE</span>
                   <span className="text-sm text-gray-500">Customers ← → Market</span>
                 </label>
-                <input 
-                  type="range" 
-                  min="-50" 
-                  max="50" 
+                <input
+                  type="range"
+                  min="-50"
+                  max="50"
                   value={exchangePosition}
                   onChange={(e) => setExchangePosition(parseInt(e.target.value, 10))}
                   className="w-full"
+                  aria-label="Exchange balance between Customers and Market"
+                  title={exchangePosition.toString()}
                 />
                 <div className="mt-1 text-sm text-gray-600 bg-blue-50 p-2 rounded">
                   {getExchangeEffect()}
@@ -341,13 +359,15 @@ const InteractiveDiamond = () => {
                   <span className="font-medium text-blue-900">OPERATE</span>
                   <span className="text-sm text-gray-500">Employees ← → Market</span>
                 </label>
-                <input 
-                  type="range" 
-                  min="-50" 
-                  max="50" 
+                <input
+                  type="range"
+                  min="-50"
+                  max="50"
                   value={operatePosition}
                   onChange={(e) => setOperatePosition(parseInt(e.target.value, 10))}
                   className="w-full"
+                  aria-label="Operate balance between Employees and Market"
+                  title={operatePosition.toString()}
                 />
                 <div className="mt-1 text-sm text-gray-600 bg-blue-50 p-2 rounded">
                   {getOperateEffect()}

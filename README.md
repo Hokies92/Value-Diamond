@@ -49,6 +49,7 @@ This tool provides:
 
 - **Dynamic Diamond Visualization**: Manipulate balance points to see how they affect organizational structure
 - **Real-time Structural Integrity Assessment**: See how changes impact organizational health
+- **Color-Coded Integrity Gauge**: Track health with an animated progress bar
 - **Balance Point Controls**: Adjust the four key balance points:
   - **VALUE** (Wall Street ↔ Customers) - Creates "Lift"
   - **DIRECTION** (Wall Street ↔ Employees) - Creates "Drag"
@@ -95,7 +96,7 @@ yarn start
 commercial-value-architecture/
 ├── src/
 │   ├── components/
-│   │   └── InteractiveDiamond.jsx     # Main visualization component
+│   │   └── InteractiveDiamond.tsx     # Main visualization component
 │   ├── App.js                         # Root component
 │   └── index.js                       # Entry point
 ├── public/
