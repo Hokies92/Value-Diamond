@@ -15,6 +15,11 @@ The Commercial Value Architecture is a framework for understanding how organizat
 
 This interactive visualization allows executives and consultants to explore how tensions between these forces affect organizational health and performance.
 
+## Documentation
+
+- [Agile Program Management Guide](docs/agile-program-management.md)
+- [Developer Documentation](commercial-value-architecture-docs.md)
+
 # Commercial Value Architecture
 
 An interactive tool for visualizing the structural tensions that shape organizational form and function.
